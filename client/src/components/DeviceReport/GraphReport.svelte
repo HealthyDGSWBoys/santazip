@@ -36,6 +36,7 @@
         background-color: aliceblue;
     }
     .progress-bar {
+        transition: 2000ms;
         height: 100%;
         position: absolute;
         left: 0;
