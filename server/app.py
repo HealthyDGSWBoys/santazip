@@ -25,7 +25,6 @@ def disconnect():
     print("dis")
 
 def onDeviceUpdate(info):
-    print(info)
     socket_io.emit("device", info)
 
 reporter.reporter.setOnUpdate(onDeviceUpdate)
