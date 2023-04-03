@@ -1,0 +1,1 @@
+docker exec -it santazip /bin/bash
