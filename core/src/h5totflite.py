@@ -1,7 +1,7 @@
 from keras import models
 import tensorflow as tf
 
-model = models.load_model('./work.h5', compile=False)
+model = models.load_model('./dist/temp.h5', compile=False)
 model.save('./tmp', save_format="tf")
 saved_model_dir = './tmp'
 

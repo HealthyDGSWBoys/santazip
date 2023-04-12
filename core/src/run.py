@@ -23,7 +23,7 @@ processer = util.MultiProcesser(
 # processer = util.AngleProcesser()
 model = models.load_model('./dist/temp.h5')
 model.summary()
-cap = cv.VideoCapture('./test/test.mp4')
+cap = cv.VideoCapture('./test/test3.mp4')
 visualizer = util.PoseClassificationVisualizer('up')
 
 
@@ -32,7 +32,7 @@ height = cap.get(cv.CAP_PROP_FRAME_HEIGHT)
 frame = cap.get(cv.CAP_PROP_FPS)
 
 fourcc = cv.VideoWriter_fourcc(*'mp4v')
-out = cv.VideoWriter('./test/output.mp4', fourcc, frame, (int(width), int(height)))
+out = cv.VideoWriter('./test/output3.mp4', fourcc, frame, (int(width), int(height)))
 
 while True:
     ret, frame = cap.read()
@@ -53,12 +53,15 @@ while True:
             max_val = res.index(max(res))
             print(res)
             if max_val == 0:
-                name = "left"
-            elif max_val == 1:
                 name = "stand"
-            else:
+            elif max_val == 1:
+                name = "left"
+            elif max_val == 2:
                 name = "right"
-
+            else:
+                name = "down"
+            
+            # if max_val == 1 or 2:
             frame = visualizer(
                 frame=frame,
                 dataset=res

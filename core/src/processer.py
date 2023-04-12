@@ -467,9 +467,10 @@ class PoseClassificationVisualizer(object):
     def _plot_classification_history(self, output_width, output_height, dataset):
         fig = plt.figure(figsize=self._plot_figsize)
 
-        self.leftSet.append(dataset[2])
-        self.standSet.append(dataset[1])
-        self.rightSet.append(dataset[0])
+        self.leftSet.append(dataset[3])
+        self.standSet.append(dataset[2])
+        self.rightSet.append(dataset[1])
+
         plt.plot(self.leftSet, linewidth=7, color='r')
         plt.plot(self.standSet, linewidth=7, color='g')
         plt.plot(self.rightSet, linewidth=7, color='b')
@@ -498,7 +499,7 @@ class PoseClassificationVisualizer(object):
 
         return img
     
-def getPointName(xyz):
+def getPointName(xyz = False):
     res = []
     if xyz:
         for landmark in mp_pose.PoseLandmark:

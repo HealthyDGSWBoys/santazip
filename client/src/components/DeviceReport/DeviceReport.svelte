@@ -27,13 +27,15 @@
             displayType: "graph"
         }
     ]
-    const socket = io("ws://192.168.0.68:6002")
-    // socket.on("")
-    socket.on("device", (arg) => {
-        values[0].current = (arg.cpu[0] / arg.cpu[1]) * 100
-        values[1].current = (arg.gpu[0] / arg.gpu[1]) * 100
-        values[2].current = (arg.ram[0] / arg.ram[1]) * 100
+    onMount(() => {
+        const socket = io("ws://192.168.0.68:60002")
+        socket.on("device", (arg) => {
+            values[0].current = (arg.cpu[0] / arg.cpu[1]) * 100
+            values[1].current = (arg.gpu[0] / arg.gpu[1]) * 100
+            values[2].current = (arg.ram[0] / arg.ram[1]) * 100
+        })
     })
+
 </script>
 
 <main>
