@@ -1,5 +1,4 @@
 from flask import Flask
-from flask import Flask, jsonify, render_template
 from flask_socketio import SocketIO
 
 import DeviceReporter as reporter
@@ -11,10 +10,6 @@ socket_io = SocketIO(app, cors_allowed_origins='*')
 @app.route('/')
 def hello_world():
     return "Hello Gaemigo Project Home Page!!"
-
-@app.route('/chat')
-def chatting():
-    return render_template('chat2.html')
 
 @socket_io.on('connect')
 def onWsConnect(msg):

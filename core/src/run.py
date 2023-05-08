@@ -14,16 +14,16 @@ pose = mp_pose.Pose(
             static_image_mode=True,
             min_detection_confidence=0.5
         )
-processer = util.MultiProcesser(
-    [
-        util.AngleProcesser(),
-        util.DistanceProcesser2(),
-    ]
-)
-# processer = util.AngleProcesser()
+# processer = util.MultiProcesser(
+#     [
+#         util.AngleProcesser(),
+#         util.DistanceProcesser(),
+#     ]
+# )
+processer = util.DistanceProcesser()
 model = models.load_model('./dist/temp.h5')
 model.summary()
-cap = cv.VideoCapture('./test/test3.mp4')
+cap = cv.VideoCapture('./test/test4.mp4')
 visualizer = util.PoseClassificationVisualizer('up')
 
 
@@ -32,7 +32,7 @@ height = cap.get(cv.CAP_PROP_FRAME_HEIGHT)
 frame = cap.get(cv.CAP_PROP_FPS)
 
 fourcc = cv.VideoWriter_fourcc(*'mp4v')
-out = cv.VideoWriter('./test/output3.mp4', fourcc, frame, (int(width), int(height)))
+out = cv.VideoWriter('./test/output4.mp4', fourcc, frame, (int(width), int(height)))
 
 while True:
     ret, frame = cap.read()
@@ -50,16 +50,14 @@ while True:
                 ])
             res = model.predict(np.array([processer(np.array(landmarks))]))[0].tolist()
 
-            max_val = res.index(max(res))
             print(res)
-            if max_val == 0:
-                name = "stand"
-            elif max_val == 1:
-                name = "left"
-            elif max_val == 2:
-                name = "right"
+            if res[0] > 0.5 and res[1] > 0.5:
+                name = "DOWN"
+            elif res[0] < 0.5 and res[1] < 0.5:
+                name = "UP"
             else:
-                name = "down"
+                name = "LEFT" if res.index(max(res)) else "RIGHT"
+
             
             # if max_val == 1 or 2:
             frame = visualizer(

@@ -78,14 +78,6 @@ class DistanceProcesser:
         pass
     def __call__(self, landmarks):
         return np.array([
-            self._get_distance(
-                self._get_average_by_names(
-                    landmarks, 'left_hip', 'right_hip'
-                ),
-                self._get_average_by_names(
-                    landmarks, 'left_shoulder', 'right_shoulder'
-                )
-            ),
             self._get_distance_by_names(
                 landmarks, 'left_shoulder', 'left_elbow'
             ),
@@ -152,16 +144,14 @@ class DistanceProcesser:
             self._get_distance_by_names(
                 landmarks, 'left_ankle', 'right_ankle'
             ),
-
-            # 신체 꺾임의 각도.
-
-            # self._get_distance(
-            #     self._get_average_by_names(landmarks, 'left_wrist', 'left_ankle'),
-            #     landmarks[self._landmark_names.index('left_hip')]),
-            # self._get_distance(
-            #     self._get_average_by_names(landmarks, 'right_wrist', 'right_ankle'),
-            #     landmarks[self._landmark_names.index('right_hip')]),
-        ]).flatten() / 3000
+            ]).flatten() / (self._get_euclid_distance(
+                self._get_average_by_names(
+                    landmarks, 'left_hip', 'right_hip'
+                ),
+                self._get_average_by_names(
+                    landmarks, 'left_shoulder', 'right_shoulder'
+                )
+            ) * 10)
     def _get_average_by_names(self, landmarks: np.ndarray, name_from: str, name_to: str) -> np.ndarray:
         lmk_from = landmarks[self._landmark_names.index(name_from)]
         lmk_to = landmarks[self._landmark_names.index(name_to)]
@@ -172,6 +162,11 @@ class DistanceProcesser:
         return self._get_distance(lmk_from, lmk_to)
     def _get_distance(self, lmk_from: np.ndarray, lmk_to: np.ndarray) -> np.ndarray:
         return lmk_to - lmk_from
+    def _get_euclid_distance(self, lmk_from: np.ndarray, lmk_to: np.ndarray) -> np.ndarray:
+        a = lmk_to[0] - lmk_from[0]    
+        b = lmk_to[1] - lmk_from[1] 
+        c = lmk_to[2] - lmk_from[2]     
+        return math.sqrt(a * a + b * b + c * c)
     
 class DistanceProcesser2:
     _landmark_names = [
@@ -270,16 +265,7 @@ class DistanceProcesser2:
             self._get_distance_by_names(
                 landmarks, 'left_ankle', 'right_ankle'
             ),
-
-            # 신체 꺾임의 각도.
-
-            # self._get_distance(
-            #     self._get_average_by_names(landmarks, 'left_wrist', 'left_ankle'),
-            #     landmarks[self._landmark_names.index('left_hip')]),
-            # self._get_distance(
-            #     self._get_average_by_names(landmarks, 'right_wrist', 'right_ankle'),
-            #     landmarks[self._landmark_names.index('right_hip')]),
-        ]).flatten() / 3000
+        ]).flatten() / 3000.0
     def _get_average_by_names(self, landmarks: np.ndarray, name_from: str, name_to: str) -> np.ndarray:
         lmk_from = landmarks[self._landmark_names.index(name_from)]
         lmk_to = landmarks[self._landmark_names.index(name_to)]
@@ -467,9 +453,8 @@ class PoseClassificationVisualizer(object):
     def _plot_classification_history(self, output_width, output_height, dataset):
         fig = plt.figure(figsize=self._plot_figsize)
 
-        self.leftSet.append(dataset[3])
-        self.standSet.append(dataset[2])
-        self.rightSet.append(dataset[1])
+        self.standSet.append(dataset[1])
+        self.rightSet.append(dataset[0])
 
         plt.plot(self.leftSet, linewidth=7, color='r')
         plt.plot(self.standSet, linewidth=7, color='g')

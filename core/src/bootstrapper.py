@@ -38,11 +38,9 @@ for video_file in file_list:
     if video_file[0] != '.':
         video_file = os.path.join(workspace_dir, video_file)
         if os.path.isdir(video_file):
-            # for item in os.listdir(video_file):
-            #     IMAGE_FILES.append(cv2.imread(item))
             continue
         elif os.path.isfile(video_file):
-            if os.path.splitext(video_file)[1] != ".mp4": continue
+            if os.path.splitext(video_file)[1] != ".mp4" and os.path.splitext(video_file)[1] != ".mov": continue
             vcap = cv2.VideoCapture(video_file)
             while True:
                 success, image = vcap.read()
@@ -78,15 +76,6 @@ for video_file in file_list:
                     pose_landmarks = np.array([[lmk.x, lmk.y, lmk.z] for lmk in pose_landmarks.landmark], dtype=np.float32) * 100
                     assert pose_landmarks.shape == (33, 3), 'Unexpected landmarks shape: {}'.format(pose_landmarks.shape)
                     writer.writerow(pose_landmarks.flatten().astype(np.str_).tolist())
-
-                    # annotated_image = image.copy()
-                    # mp_drawing.draw_landmarks(
-                    # annotated_image,
-                    # result.pose_landmarks,
-                    # mp_pose.POSE_CONNECTIONS,
-                    # landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style())
-                    # cv2.imshow("A",annotated_image)
-                    # cv2.waitKey(1)
                     
                     pbar.update()
 
